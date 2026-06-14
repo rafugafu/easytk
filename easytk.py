@@ -65,6 +65,7 @@ class win(ttk.Window):
 			master = self
 		if scrolled == True:
 			ans = ScrolledText(master, *args, **kwargs)
+			ans.bind = ans.text.bind
 		else:
 			ans = tk.Text(master, *args, **kwargs)
 		ans.bind('<Control-a>', lambda event: self.selall(ans))
