@@ -98,22 +98,22 @@ class win(ttk.Window):
 			return ScrolledFrame(master, *args, **kwargs)
 		else:
 			return ttk.Frame(master, *args, **kwargs)
-	def configtext(self):
-		style = self.gettheme()
-		fg = self.style().lookup(style, 'foreground')
-		bg = self.style().lookup(style, 'background')
-		sbg = self.style().lookup(style, 'selectbackground')
-		sfg = self.style().lookup(style, 'selectforeground')
-		f = self.style().lookup(style, 'focuscolor')
-		self.configure(bg = bg)
 	def style(self, style = None, master = None):
 		if style == None:
 			return ttk.Style()
 		else:
 			ttk.Style().theme_use(style)
-			self.configtext()
 	def themes(self):
-		return sorted(self.style().theme_names())
+		import importlib
+		import ttkbootstrap.themes.user as user_themes
+		from ttkbootstrap.style import ThemeDefinition
+		importlib.reload(user_themes)
+		s = self.style()
+		existing = s.theme_names()
+		for name, definition in user_themes.USER_THEMES.items():
+			if name not in existing:
+				s.register_theme(ThemeDefinition(name = name, themetype = definition['type'], colors = definition['colors']))
+		return sorted(s.theme_names())
 	def slider(self, range_, master = None, *args, **kwargs):
 		if master == None:
 			master = self
@@ -203,6 +203,8 @@ class win(ttk.Window):
 		if master == None:
 			master = self
 		command = kwargs.pop('command', None)
+		if showdefault not in options:
+			options = (showdefault,) + tuple(options)
 		ans = ttk.OptionMenu(master, stringvar, showdefault, *options, *args, **kwargs)
 		stringvar.set(showdefault)
 		if command:
@@ -259,7 +261,7 @@ class win(ttk.Window):
 	def show(self, *args, **kwargs):
 		return self.mainloop(*args, **kwargs)
 	def gettheme(self):
-		return self.tk.call('ttk::style', 'theme', 'use')
+		return ttk.Style().theme_use()
 	def openfile(self, types = ['all']):
 		return file(self).openfile(types)
 	def savefile(self, types = ['all']):
