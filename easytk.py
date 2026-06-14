@@ -20,11 +20,11 @@ class win(ttk.Window):
 	def destroy(self):
 		try:
 			self.update_idletasks()
-		except:
+		except Exception:
 			pass
 		try:
 			ttk.Style.instance = None
-		except:
+		except Exception:
 			pass
 		tk.Tk.destroy(self)
 	def import_theme(self, path):
@@ -36,7 +36,6 @@ class win(ttk.Window):
 		subwin._map_id = self.bind('<Map>', lambda event: subwin.deiconify())
 		subwin._unmap_id = self.bind('<Unmap>', lambda event: subwin.withdraw())
 		subwin._parent = self
-		return subwin
 		return subwin
 	def getfonts(self):
 		return font.families(self)
@@ -163,11 +162,11 @@ class win(ttk.Window):
 		while True:
 			try:
 				self.strans
-			except:
+			except Exception:
 				try:
 					ans_.focus()
 					self.update()
-				except:
+				except Exception:
 					pass
 			else:
 				strans = self.strans
@@ -250,28 +249,29 @@ class win(ttk.Window):
 			self.update()
 			self.minsize(width = self.getgeo()[0], height = self.getgeo()[1])
 			self.maxsize(width = self.getgeo()[0], height = self.getgeo()[1])
-		except:
+		except Exception:
 			pass
 	def sizabletrue(self):
 		try:
 			self.update()
 			self.minsize(width = 0, height = 0)
 			self.maxsize(width = 99999, height = 99999)
-		except:
+		except Exception:
 			pass
 	def show(self, *args, **kwargs):
 		return self.mainloop(*args, **kwargs)
 	def gettheme(self):
 		return ttk.Style().theme_use()
 	def openfile(self, types = ['all']):
-		return file(self).openfile(types)
+		return filedialog(self).openfile(types)
 	def savefile(self, types = ['all']):
-		return file(self).savefile(types)
+		return filedialog(self).savefile(types)
 	def getgeo(self):
 		return [self.winfo_width(), self.winfo_height()]
-class file():
-	def __init__(self, master = None):
+class filedialog():
+	def __init__(self, master):
 		self.master = master
+		self.done = None
 	def lfilter(self, filetype):
 		if filetype != 'all':
 			self.extension = filetype
@@ -295,11 +295,11 @@ class file():
 						self.files.insert('end', self._file + '/')
 					else:
 						self.files.insert('end', self._file)
-			except PermissionError as error:
-				self.root.error('[Errno 13]', error)
+			except Exception as error:
+				self.root.error('Error', error)
 				self.open_('..')
 	def openfile(self, types):
-		self.root = toplevel(self.master) if self.master else win()
+		self.root = self.master.subwin()
 		self.root.title('Open file')
 		self.ff = self.root.frame()
 		self.ff.grid(column = 0, row = 0, padx = 20, pady = 20)
@@ -314,32 +314,24 @@ class file():
 		self.scroll.config(command = self.files.yview)
 		self.dirshow = self.root.text(master = self.ff)
 		self.dirshow.pack(side = 'top', fill = 'x')
-		self.file = self.root.entry(master = self.ff, state = 'disabled')
+		self.fileentry = self.root.entry(master = self.ff, state = 'disabled')
 		self.types = self.root.stringvar(value = types[0])
 		self.open_(os.getcwd())
 		self.back = self.root.button(master = self.ff, text = '<', command = lambda: self.open_('..'))
 		self.back.pack(side = 'left')
 		self.root.label(self.back, text = 'Back', master = self.ff)
-		self.file.pack(side = 'top', fill = 'x')
+		self.fileentry.pack(side = 'top', fill = 'x')
 		self.root.button(text = 'Cancel', command = self.root.destroy).grid(column = 0, row = 1, sticky = 'w', padx = 20, pady = 20)
 		self.root.dropdown(self.types, types[0], types, command = lambda val: [self.lfilter(val)]).grid(column = 0, row = 1, padx = 20, pady = 20)
 		self.root.button(text = 'Open', command = lambda: self.open_()).grid(column = 0, row = 1, sticky = 'e', padx = 20, pady = 20)
 		self.root.sizablefalse()
 		while True:
-			try:
-				self.root.winfo_exists()
-			except:
-				try:
-					self.done
-				except:
-					return None
-				else:
-					return self.done
+			if not self.root.exists:
+				return self.done
 			else:
-				self.root.lift()
 				self.root.update()
 	def savefile(self, types):
-		self.root = toplevel(self.master) if self.master else win()
+		self.root = self.master.subwin()
 		self.extension = types[0]
 		self.root.title('Save file')
 		self.ff = self.root.frame()
@@ -356,7 +348,7 @@ class file():
 		self.scroll.config(command = self.files.yview)
 		self.dirshow = self.root.text(master = self.ff)
 		self.dirshow.pack(side = 'top', fill = 'x')
-		self.file = self.root.entry(master = self.ff)
+		self.fileentry = self.root.entry(master = self.ff)
 		self.types = self.root.stringvar(value = types[0])
 		self.open_(os.getcwd())
 		self.new = self.root.button(master = self.ff, text = '+', command = self.mnd)
@@ -365,39 +357,30 @@ class file():
 		self.back = self.root.button(master = self.ff, text = '<', command = lambda: self.open_('..'))
 		self.back.pack(side = 'left')
 		self.root.label(self.back, text = 'Back', master = self.ff)
-		self.file.pack(side = 'top', fill = 'x')
+		self.fileentry.pack(side = 'top', fill = 'x')
 		self.root.button(text = 'Cancel', command = self.root.destroy).grid(column = 0, row = 1, sticky = 'w', padx = 20, pady = 20)
 		self.root.dropdown(self.types, types[0], types, command = lambda val: [self.lfilter(val)]).grid(column = 0, row = 1, padx = 20, pady = 20)
 		self.root.button(text = 'Save', command = lambda: self.save()).grid(column = 0, row = 1, sticky = 'e', padx = 20, pady = 20)
 		self.root.sizablefalse()
 		while True:
-			try:
-				self.root.winfo_exists()
-			except:
-				try:
-					self.done
-				except:
-					return None
-				else:
-					return self.done
+			if not self.root.exists:
+				return self.done
 			else:
-				self.root.lift()
-				self.file.focus()
 				self.root.update()
 	def mnd(self):
 		nd = self.root.askstring('New dir', '')
 		if nd:
 			try:
 				os.mkdir(nd)
-			except FileExistsError:
-				self.root.error('Error', 'A directory with that name already exists')
+			except Exception as error:
+				self.root.error('Error', error)
 			else:
 				self.open_('.')
 	def highlight(self):
-		self.file.delete(0, 'end')
+		self.fileentry.delete(0, 'end')
 		try:
-			self.file.insert('end', self.files.get(self.files.curselection()[0]))
-		except:
+			self.fileentry.insert('end', self.files.get(self.files.curselection()[0]))
+		except Exception:
 			pass
 	def open_(self, dir_ = None):
 		if dir_ == None:
@@ -408,25 +391,26 @@ class file():
 					self.done = os.path.join(os.getcwd(), self.files.get(self.files.curselection()[0]))
 					self.root.destroy()
 					return
-			except:
+			except Exception:
 				pass
 		else:
 			os.chdir(dir_)
 			self.dirshow.config(text = os.getcwd())
-			self.file.delete(0, 'end')
+			self.fileentry.delete(0, 'end')
 		self.lfilter(self.types.get())
 	def save(self):
 		if self.extension != '':
-			formattedfile = os.path.join(os.path.dirname(self.file.get()), os.path.splitext(os.path.basename(self.file.get()))[0] + '.' + self.extension)
+			formattedfile = os.path.join(os.path.dirname(self.fileentry.get()), os.path.splitext(os.path.basename(self.fileentry.get()))[0] + '.' + self.extension)
 		else:
-			formattedfile = self.file.get()
+			formattedfile = self.fileentry.get()
 		formattedfile = os.path.join(os.getcwd(), formattedfile)
-		if os.path.isdir(self.file.get()):
-			self.open_(self.file.get())
-		elif self.file.get():
+		if os.path.isdir(self.fileentry.get()):
+			self.open_(self.fileentry.get())
+		elif self.fileentry.get():
 			if os.path.exists(formattedfile):
 				if self.root.ask('WARNING', 'A file named "{}" already exists. Do you want to replace it?'.format(formattedfile), ('yes', 'no')):
 					self.done = formattedfile
+					self.root.destroy()
 					return
 			else:
 				self.done = formattedfile
@@ -444,6 +428,6 @@ class toplevel(tk.Toplevel, win):
 		try:
 			self._parent.unbind('<Map>', self._map_id)
 			self._parent.unbind('<Unmap>', self._unmap_id)
-		except:
+		except Exception:
 			pass
 		tk.Toplevel.destroy(self)
