@@ -1,8 +1,8 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledText, ScrolledFrame
+from ttkbootstrap.dialogs import Messagebox as mb
 from tkinter import simpledialog as sd
-from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import colorchooser as cc
@@ -127,21 +127,21 @@ class win(ttk.Window):
 			master = self
 		return ttk.Scrollbar(master, *args, **kwargs)
 	def error(self, title, message):
-		return mb.showerror(title, message)
+		return mb.show_error(title, message)
 	def info(self, title, message):
-		return mb.showinfo(title, message)
+		return mb.show_info(title, message)
 	def warning(self, title, message):
-		return mb.showwarning(title, message)
+		return mb.show_warning(title, message)
 	def ask(self, title, question, options, *args, **kwargs):
 		options = tuple(options)
 		if options == ('yes', 'no'):
-			return mb.askyesno(title, question, *args, **kwargs)
+			return mb.yesno(title = title, message = question, *args, **kwargs)
 		if options == ('ok', 'cancel'):
-			return mb.askokcancel(title, question, *args, **kwargs)
+			return mb.okcancel(title = title, message = question, *args, **kwargs)
 		if options == ('yes', 'no', 'cancel'):
-			return mb.askyesnocancel(title, question, *args, **kwargs)
+			return mb.yesnocancel(title = title, message = question, *args, **kwargs)
 		if options == ('retry', 'cancel'):
-			return mb.askretrycancel(title, question, *args, **kwargs)
+			return mb.retrycancel(title = title, message = question, *args, **kwargs)
 	def strok(self, ans):
 		self.strans = ans
 	def askstring(self, title, prompt):
