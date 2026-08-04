@@ -126,12 +126,12 @@ class win(ttk.Window):
 		if master == None:
 			master = self
 		return ttk.Scrollbar(master, *args, **kwargs)
-	def error(self, title, message):
-		return mb.show_error(title = title, message = message)
-	def info(self, title, message):
-		return mb.show_info(title = title, message = message)
-	def warning(self, title, message):
-		return mb.show_warning(title = title, message = message)
+	def error(self, title, message, *args, **kwargs):
+		return mb.show_error(title = title, message = message, *args, **kwargs)
+	def info(self, title, message, *args, **kwargs):
+		return mb.show_info(title = title, message = message, *args, **kwargs)
+	def warning(self, title, message, *args, **kwargs):
+		return mb.show_warning(title = title, message = message, *args, **kwargs)
 	def ask(self, title, question, options, *args, **kwargs):
 		options = tuple(options)
 		if options == ('yes', 'no'):
