@@ -26,7 +26,7 @@ class win(ttk.Window):
 			ttk.Style.instance = None
 		except Exception:
 			pass
-		tk.Tk.destroy(self)
+		self.destroy()
 	def import_theme(self, path):
 		self.style()._s.load_user_themes(path)
 	def subwin(self):
