@@ -135,13 +135,13 @@ class win(ttk.Window):
 	def ask(self, title, question, options, *args, **kwargs):
 		options = tuple(options)
 		if options == ('yes', 'no'):
-			return {'Yes': True, 'No': False}[mb.yesno(title = title, message = question, *args, **kwargs)]
+			return {'Yes': True, 'No': False, None: None}[mb.yesno(title = title, message = question, *args, **kwargs)]
 		if options == ('ok', 'cancel'):
-			return {'OK': True, 'Cancel': False}[mb.okcancel(title = title, message = question, *args, **kwargs)]
+			return {'OK': True, 'Cancel': False, None: None}[mb.okcancel(title = title, message = question, *args, **kwargs)]
 		if options == ('yes', 'no', 'cancel'):
-			return {'Yes': True, 'No': False, 'Cancel': None}[mb.yesnocancel(title = title, message = question, *args, **kwargs)]
+			return {'Yes': True, 'No': False, 'Cancel': None, None: None}[mb.yesnocancel(title = title, message = question, *args, **kwargs)]
 		if options == ('retry', 'cancel'):
-			return {'Retry': True, 'Cancel': False}[mb.retrycancel(title = title, message = question, *args, **kwargs)]
+			return {'Retry': True, 'Cancel': False, None: None}[mb.retrycancel(title = title, message = question, *args, **kwargs)]
 	def strok(self, ans):
 		self.strans = ans
 	def askstring(self, title, prompt):
