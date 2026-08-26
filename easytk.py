@@ -1,6 +1,6 @@
 import tkinter as tk
 import ttkbootstrap as ttk
-from ttkbootstrap.scrolled import ScrolledText, ScrolledFrame
+from ttkbootstrap.widgets.scrolled import ScrolledText, ScrolledFrame
 from ttkbootstrap.dialogs import Messagebox as mb
 from tkinter import simpledialog as sd
 from tkinter import filedialog as fd
@@ -28,7 +28,7 @@ class win(ttk.Window):
 			pass
 		tk.Tk.destroy(self)
 	def import_theme(self, path):
-		self.style()._s.load_user_themes(path)
+		self.style().load_user_themes(path)
 	def subwin(self):
 		subwin = toplevel(self)
 		subwin.exists = True
@@ -104,16 +104,7 @@ class win(ttk.Window):
 		else:
 			ttk.Style().theme_use(style)
 	def themes(self):
-		import importlib
-		import ttkbootstrap.themes.user as user_themes
-		from ttkbootstrap.style import ThemeDefinition
-		importlib.reload(user_themes)
-		s = self.style()
-		existing = s.theme_names()
-		for name, definition in user_themes.USER_THEMES.items():
-			if name not in existing:
-				s.register_theme(ThemeDefinition(name = name, themetype = definition['type'], colors = definition['colors']))
-		return sorted(s.theme_names())
+		return sorted(self.style().theme_names())
 	def slider(self, range_, master = None, *args, **kwargs):
 		if master == None:
 			master = self
