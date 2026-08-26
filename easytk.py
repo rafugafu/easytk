@@ -10,11 +10,11 @@ import os
 class win(ttk.Window):
 	def __init__(self, style = True, *args, **kwargs):
 		if type(style) == str:
-			super().__init__(themename = style, **kwargs)
+			super().__init__(themename = style, *args, **kwargs)
 		elif style == True:
-			super().__init__(themename = 'pulse', **kwargs)
+			super().__init__(**kwargs)
 		else:
-			super().__init__(themename = 'clam', **kwargs)
+			super().__init__(themename = 'clam', *args, **kwargs)
 		self.imgs = []
 		self.path = os.path.dirname(os.path.abspath(__file__))
 	def destroy(self):
