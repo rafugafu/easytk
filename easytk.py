@@ -7,6 +7,7 @@ from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import colorchooser as cc
 import os
+import importlib.util
 class win(ttk.Window):
 	def __init__(self, style = True, *args, **kwargs):
 		if type(style) == str:
@@ -28,7 +29,9 @@ class win(ttk.Window):
 			pass
 		tk.Tk.destroy(self)
 	def import_theme(self, path):
-		self.style().load_user_themes(path)
+		spec = importlib.util.spec_from_file_location(os.path.basename(path), path)
+		module = importlib.util.module_from_spec(spec)
+		spec.loader.exec_module(module)
 	def subwin(self):
 		subwin = toplevel(self)
 		subwin.exists = True
