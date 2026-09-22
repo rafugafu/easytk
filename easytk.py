@@ -213,7 +213,7 @@ class win(ttk.Window):
 	def spinbox(self, range_, master = None, *args, **kwargs):
 		if master == None:
 			master = self
-		return ttk.Spinbox(master, from_ = range_[0], to = range_[1])
+		return ttk.Spinbox(master, from_ = range_[0], to = range_[1], *args, **kwargs)
 	def check(self, master = None, *args, **kwargs):
 		if master == None:
 			master = self
