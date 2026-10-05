@@ -1,4 +1,4 @@
-Easytk is an easy to use, themed wrapper for tkinter and ttkbootstrap.    
+Easytk is an easy to use, themed wrapper for tkinter and ttkbootstrap.  
 # Installation  
 ## Full Installation  
 1. Copy the [easytk.py](easytk.py) file to your python modules directory (usually `~/.local/lib/python3.x/site-packages` on Linux, and `C:\Users\{user}\AppData\Local\Programs\Python\Python3xx\Lib\site-packages` on Windows).  
